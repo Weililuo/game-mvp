@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://dmbwbt1fxypab"]
+[gd_scene format=3 uid="uid://btu246jj4p0b0"]
 
-[ext_resource type="Script" path="res://knight.gd" id="1_nsuie"]
-[ext_resource type="Texture2D" path="res://Knight.png" id="2_nsuie"]
+[ext_resource type="Script" uid="uid://c4tjl4xfwpnlc" path="res://knight.gd" id="1_nsuie"]
+[ext_resource type="Texture2D" uid="uid://besm7ucjgu5bp" path="res://Knight.png" id="2_nsuie"]
 [ext_resource type="Script" uid="uid://bhhaemrchekk3" path="res://damage_boxes/hitbox.gd" id="3_26ldq"]
 
 [sub_resource type="Animation" id="Animation_26ldq"]
