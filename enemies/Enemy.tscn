@@ -1,0 +1,242 @@
+[gd_scene format=3 uid="uid://bw3n3mygoblin1"]
+
+; ============================================================
+; 小怪 Enemy 场景 (BasicGoblin)
+; 精灵表：BasicGoblin-Row.png  2432x32 -> 64x32/帧, 单行38帧 (aseprite by-row 长条导出)
+; 帧号 = aseprite frame index（与动画 tag 一一对应，无错帧）
+; ============================================================
+
+[ext_resource type="Script" path="res://enemies/Enemy.gd" id="1_enemy"]
+[ext_resource type="Texture2D" path="res://enemies/BasicGoblin-Row.png" id="2_goblin_tex"]
+[ext_resource type="Script" path="res://damage_boxes/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Script" path="res://damage_boxes/hitbox.gd" id="4_hitbox"]
+
+; ----------------------------------------------------------------
+; 动画资源（Sprite2D frame 轨道）
+; ----------------------------------------------------------------
+
+; Idle：aseprite tag Idle, 帧 0~5 (6帧循环)
+[sub_resource type="Animation" id="A_idle"]
+resource_name = "idle"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+; Run：aseprite tag Run, 帧 6~13 (8帧循环)
+[sub_resource type="Animation" id="A_run"]
+resource_name = "run"
+length = 0.56
+loop_mode = 1
+step = 0.07
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.07, 0.14, 0.21, 0.28, 0.35, 0.42, 0.49),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [6, 7, 8, 9, 10, 11, 12, 13]
+}
+
+; Attack：aseprite tag Attack1, 帧 17~22 (6帧)
+;   0.14s  开攻击判定（第2帧，剑挥出）
+;   0.35s  关攻击判定
+[sub_resource type="Animation" id="A_attack"]
+resource_name = "attack"
+length = 0.42
+step = 0.07
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.07, 0.14, 0.21, 0.28, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [17, 18, 19, 20, 21, 22]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.14, 0.35),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"open_attack_hitbox"
+}, {
+"args": [],
+"method": &"close_attack_hitbox"
+}]
+}
+
+; Hurt：aseprite tag Hurt, 帧 29~32 (4帧)
+[sub_resource type="Animation" id="A_hurt"]
+resource_name = "hurt"
+length = 0.32
+step = 0.08
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.08, 0.16, 0.24),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [29, 30, 31, 32]
+}
+
+; Death：aseprite tag Death, 帧 33~37 (5帧，单次播放)
+[sub_resource type="Animation" id="A_death"]
+resource_name = "death"
+length = 0.4
+step = 0.08
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.08, 0.16, 0.24, 0.32),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [33, 34, 35, 36, 37]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimLib_goblin"]
+_data = {
+&"RESET": SubResource("A_idle"),
+&"idle": SubResource("A_idle"),
+&"run": SubResource("A_run"),
+&"attack": SubResource("A_attack"),
+&"hurt": SubResource("A_hurt"),
+&"death": SubResource("A_death"),
+}
+
+; ----------------------------------------------------------------
+; 碰撞形状
+; ----------------------------------------------------------------
+[sub_resource type="CapsuleShape2D" id="BodyCapsule"]
+radius = 7.0
+height = 18.0
+
+[sub_resource type="RectangleShape2D" id="HurtboxRect"]
+size = Vector2(16, 22)
+
+[sub_resource type="RectangleShape2D" id="HitboxRect"]
+size = Vector2(32, 22)
+
+[sub_resource type="CircleShape2D" id="DetectCircle"]
+radius = 240.0
+
+; ================================================================
+; 节点树
+; ================================================================
+
+; --- 小怪根节点：CharacterBody2D
+; collision_layer = 4 (Layer 3 = enemy)
+; collision_mask  = 1 + 2 + 4 = 7 (与 forest / player / enemy 发生物理碰撞，站地上且不穿墙/主角)
+[node name="Enemy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_enemy")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_goblin_tex")
+offset = Vector2(0, -15)
+centered = true
+hframes = 38
+vframes = 1
+frame = 0
+texture_filter = 1
+; 单行长条精灵表（从 BasicGoblin.aseprite 按 by-row 导出，38帧 64×32/帧）
+; 帧号 = aseprite frame index，与动画 tag 完全一一对应，无错帧
+;   Idle 0-5 | Run 6-13 | Jump 14-16 | Attack1 17-22 | Attack2 23-28 | Hurt 29-32 | Death 33-37
+; texture_filter=1 = Nearest 像素硬边采样
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("AnimLib_goblin")
+autoplay = "idle"
+
+; --- 身体碰撞
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -9)
+shape = SubResource("BodyCapsule")
+
+; --- 小怪受击盒 Hurtbox
+; collision_layer = 16 (Layer 5 = enemy_hurtbox) —— 主角 SwordHitbox mask=16 正好能命中它
+; collision_mask  = 0  —— Hurtbox 是被动挨打，不主动检测任何东西
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -9)
+shape = SubResource("HurtboxRect")
+debug_color = Color(0.2, 0.7, 1.0, 0.4)
+
+; --- 小怪攻击盒 AttackHitbox（默认 monitoring/monitorable = false）
+; collision_layer = 8 (Layer 4 = player_hurtbox) —— 放在 player_hurtbox 层
+; collision_mask  = 10 (二进制 1010) = 2 (player 层) + 8 (player_hurtbox 层)
+;                    这样两条命中路径都可用：
+;                    (a) 直接检测到 Player 角色身体（CharacterBody2D） → body_entered → Player.take_damage
+;                    (b) 未来如有独立的 Player Hurtbox（Area2D 在第 4 层） → area_entered → Hurtbox.take_hit
+[node name="AttackHitbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 10
+monitoring = false
+monitorable = false
+script = ExtResource("4_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
+position = Vector2(24, -7)
+shape = SubResource("HitboxRect")
+debug_color = Color(1, 0.3, 0.3, 0.4)
+
+; --- 主角感知 DetectionArea
+; collision_layer = 0 (不在任何层，只检测)
+; collision_mask  = 2 (Layer 2 = player) —— 只检测 Player 角色身体
+[node name="DetectionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+position = Vector2(0, -16)
+shape = SubResource("DetectCircle")
+debug_color = Color(1, 1, 0, 0.12)
+
+; --- 墙检测（测前方是否有障碍物 → 触发跳）
+[node name="WallCheck" type="RayCast2D" parent="."]
+target_position = Vector2(16, -6)
+collision_mask = 5
+debug_color = Color(0.2, 1, 0.5, 1)
+
+; --- 前方地板检测（测前方是否悬空 → 若主角在上方则跳）
+[node name="FloorAheadCheck" type="RayCast2D" parent="."]
+target_position = Vector2(16, 10)
+collision_mask = 1
+debug_color = Color(1, 0.5, 0, 1)

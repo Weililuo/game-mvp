@@ -1,19 +1,67 @@
 [gd_scene format=3 uid="uid://djkh8gy0gnq4q"]
 
-[ext_resource type="PackedScene" uid="uid://btu246jj4p0b0" path="res://knight.tscn" id="1_oabld"]
-[ext_resource type="Texture2D" uid="uid://cnegjxd3c8g3c" path="res://Background.png" id="2_i7s6n"]
+; ============================================================
+;  主场景：背景 + 地面碰撞 + 主角 + 1 只小怪（从屏幕右侧向左进攻主角）
+;  打开 Godot 4.7 → 按 F5 即可游玩，无需任何拖拽调整
+; ============================================================
 
-[node name="Background" type="Node2D" unique_id=1764774381]
+[ext_resource type="PackedScene" uid="uid://btu246jj4p0b0" path="res://knight.tscn" id="1_player_scn"]
+[ext_resource type="PackedScene" uid="uid://bw3n3mygoblin1" path="res://enemies/Enemy.tscn" id="2_enemy_scn"]
+[ext_resource type="Texture2D" uid="uid://cnegjxd3c8g3c" path="res://Background.png" id="3_bg_tex"]
 
-[node name="Parallax2D" type="Parallax2D" parent="." unique_id=68366498]
+; ----------------- 地面碰撞形状 -----------------
+; 主地面：顶面 y=172（胶囊底部对齐后视觉正好踩在背景地面上）
+[sub_resource type="RectangleShape2D" id="GroundShape_Main"]
+size = Vector2(800, 40)
+
+; 右侧小高台：顶面 y=137（比主地面高 35 像素，可测试小怪/主角跳墙）
+[sub_resource type="RectangleShape2D" id="GroundShape_Platform"]
+size = Vector2(100, 16)
+
+; ----------------- 节点树 -----------------
+[node name="Background" type="Node2D"]
+
+; ----- 背景视差层（队友原有）-----
+[node name="Parallax2D" type="Parallax2D" parent="."]
 repeat_size = Vector2(320, 0)
 repeat_times = 2
 
-[node name="ForestBackground" type="TextureRect" parent="Parallax2D" unique_id=1659079489]
+[node name="ForestBackground" type="TextureRect" parent="Parallax2D"]
 offset_right = 320.0
 offset_bottom = 189.0
-texture = ExtResource("2_i7s6n")
+texture = ExtResource("3_bg_tex")
 expand_mode = 3
+texture_filter = 1
 
-[node name="Player" parent="." unique_id=430404474 instance=ExtResource("1_oabld")]
-position = Vector2(161, 171)
+; ----- 主地面 StaticBody2D
+;       顶面 y = 172, 高度 40 → 中心 y = 172 + 20 = 192
+;       宽度 800, 中心 x = 400
+[node name="Ground" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+position = Vector2(400, 192)
+shape = SubResource("GroundShape_Main")
+
+; ----- 右侧小高台 StaticBody2D
+;       顶面 y = 137, 高度 16 → 中心 y = 145；x 中心 = 380
+[node name="Platform" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+position = Vector2(380, 145)
+shape = SubResource("GroundShape_Platform")
+
+; ----- 主角：出生在左侧 (110, 168)
+;       胶囊底部 local y = 3，落地 y+3 = 172 → y = 169
+;       出生比落点高 1 像素，让重力轻轻拉到地面上，视觉不跳
+[node name="Player" parent="." instance=ExtResource("1_player_scn")]
+position = Vector2(110, 168)
+
+; ----- 仅 1 只小怪：出生在屏幕最右边 (295, 168)
+;       胶囊底部 local y = 0，落地 y+0 = 172 → y = 172
+;       出生高 4 像素，重力拉到地面上。面朝向通过目标（主角在左侧）自动 flip
+[node name="Enemy" parent="." instance=ExtResource("2_enemy_scn")]
+position = Vector2(295, 168)
