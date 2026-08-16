@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bhhaemrchekk3" path="res://damage_boxes/hitbox.gd" id="3_26ldq"]
 [ext_resource type="AudioStream" uid="uid://d2qehwnyc2wtk" path="res://sounds/enemy_hit.wav" id="4_np0bx"]
 [ext_resource type="AudioStream" uid="uid://dh8et7bejdgc8" path="res://sounds/dash.wav" id="5_go3up"]
+[ext_resource type="AudioStream" uid="uid://celcjwwlq7ieo" path="res://sounds/perfect_shield.wav" id="6_gadha"]
 
 [sub_resource type="Animation" id="Animation_26ldq"]
 length = 0.001
@@ -352,3 +353,7 @@ stream = ExtResource("4_np0bx")
 stream = ExtResource("5_go3up")
 volume_db = 9.0
 pitch_scale = 3.8
+
+[node name="SfxParry" type="AudioStreamPlayer2D" parent="." unique_id=1008095079]
+stream = ExtResource("6_gadha")
+volume_db = -2.0

@@ -251,9 +251,13 @@ func take_damage(amount: int, source: Area2D = null) -> void:
 
 	# [2] 护盾状态：完全无敌 + 完美弹反检测
 	if cur_state == "ShieldState":
-		# 如果举盾时间小于等于 0.1 秒，触发完美弹反！
-		if shield_timer <= 0.11:
+		# 如果举盾时间小于等于 0.15 秒，触发完美弹反！
+		if shield_timer <= 0.15:
 			print("⚡ 完美弹反！")
+
+			var sfx_parry = get_node_or_null("SfxParry") as AudioStreamPlayer2D # Perfect shield
+			if sfx_parry:
+				sfx_parry.play()
 			
 			# 弹反计数与回血逻辑
 			parry_count += 1
