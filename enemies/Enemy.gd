@@ -413,6 +413,8 @@ func _on_attack_hit_body(body: Node) -> void:
 func take_damage(amount: int, source: Area2D = null) -> void:
 	if state == State.DEAD or amount <= 0:
 		return
+	if has_node("SfxHurt"):
+		$SfxHurt.play()
 	hp = max(0, hp - amount)
 	_set_state(State.HURT)
 	if hp <= 0:

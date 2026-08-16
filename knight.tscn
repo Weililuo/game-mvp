@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://dc8avimev5y01" path="res://knight.gd" id="1_nsuie"]
 [ext_resource type="Texture2D" uid="uid://b0te1np4va3r0" path="res://Knight.png" id="2_nsuie"]
 [ext_resource type="Script" uid="uid://bhhaemrchekk3" path="res://damage_boxes/hitbox.gd" id="3_26ldq"]
+[ext_resource type="AudioStream" uid="uid://d2qehwnyc2wtk" path="res://sounds/enemy_hit.wav" id="4_np0bx"]
+[ext_resource type="AudioStream" uid="uid://dh8et7bejdgc8" path="res://sounds/dash.wav" id="5_go3up"]
 
 [sub_resource type="Animation" id="Animation_26ldq"]
 length = 0.001
@@ -342,3 +344,11 @@ script = ExtResource("3_26ldq")
 position = Vector2(4.625, -5.25)
 shape = SubResource("RectangleShape2D_6835a")
 debug_color = Color(0.8994785, 0.28792372, 0.32944453, 0.41960785)
+
+[node name="SfxHurt" type="AudioStreamPlayer2D" parent="." unique_id=1538434983]
+stream = ExtResource("4_np0bx")
+
+[node name="SfxDash" type="AudioStreamPlayer2D" parent="." unique_id=969390459]
+stream = ExtResource("5_go3up")
+volume_db = 9.0
+pitch_scale = 3.8

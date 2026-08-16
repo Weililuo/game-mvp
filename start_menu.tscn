@@ -34,10 +34,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -80.0
-offset_top = -70.0
-offset_right = 80.0
-offset_bottom = 10.0
+offset_left = -106.0
+offset_top = -90.0
+offset_right = 100.0
+offset_bottom = 13.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_v2mkm")
@@ -50,10 +50,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -32.0
-offset_top = 10.0
-offset_right = 32.0
-offset_bottom = 60.0
+offset_left = -40.0
+offset_top = 18.0
+offset_right = 36.800003
+offset_bottom = 78.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_ctwoq")
@@ -66,10 +66,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -30.0
-offset_right = 100.0
-offset_bottom = 30.0
+offset_left = -125.0
+offset_top = -31.0
+offset_right = 118.33331
+offset_bottom = 42.0
 grow_horizontal = 2
 grow_vertical = 2
 texture_normal = ExtResource("4_ppfnh")
@@ -78,9 +78,11 @@ stretch_mode = 5
 
 [node name="BGM" type="AudioStreamPlayer" parent="." unique_id=518079452]
 stream = ExtResource("6_7boi2")
+volume_db = -3.0
 autoplay = true
 
 [node name="SfxClick" type="AudioStreamPlayer" parent="." unique_id=1051846068]
 stream = ExtResource("7_7boi2")
+volume_db = -8.0
 
 [connection signal="pressed" from="Start" to="." method="_on_start_pressed"]

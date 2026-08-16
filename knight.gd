@@ -94,6 +94,9 @@ func move_state(delta: float) -> void:
 		start_attack_cooldown()
 
 	if Input.is_action_just_pressed("dash") and can_dash:
+		var sfx_dash = get_node_or_null("SfxDash") as AudioStreamPlayer2D
+		if sfx_dash:
+			sfx_dash.play()
 		can_dash = false # In CD, can't use dash at the moment
 		playback.travel("DashState")
 		start_dash_cooldown() # Set timer
@@ -151,6 +154,9 @@ func shield_state(delta: float) -> void:
 		start_attack_cooldown()
 
 	elif Input.is_action_just_pressed("dash") and can_dash:
+		var sfx_dash = get_node_or_null("SfxDash") as AudioStreamPlayer2D
+		if sfx_dash:
+			sfx_dash.play()
 		can_dash = false
 		playback.travel("DashState")
 		start_dash_cooldown()
@@ -265,6 +271,10 @@ func take_damage(amount: int, source: Area2D = null) -> void:
 				source.owner.take_damage(1)
 				
 		return # ⚠️ 核心：只要是举盾状态，不管是不是完美弹反，都不掉血，直接结束！
+
+	var sfx = get_node_or_null("SfxHurt") as AudioStreamPlayer2D
+	if sfx:
+		sfx.play()
 
 	# [3] 正常受伤逻辑
 	hp -= amount

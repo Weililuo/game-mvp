@@ -10,5 +10,5 @@ func _on_start_pressed() -> void:
 	)
 	
 	# Wait to change scene
-	await get_tree().create_timer(0.30).timeout
+	await get_tree().create_timer(0.10).timeout
 	get_tree().change_scene_to_file("res://background.tscn")
