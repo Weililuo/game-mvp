@@ -1,0 +1,191 @@
+[gd_scene format=3 uid="uid://cyxwd6k5eq82c"]
+
+[ext_resource type="Script" uid="uid://0w0w3850ik44" path="res://enemies/Enemy.gd" id="1_enemy"]
+[ext_resource type="Texture2D" uid="uid://jxvpg3mufeol" path="res://enemies/BasicGoblin-Row.png" id="2_goblin_tex"]
+[ext_resource type="Script" uid="uid://ce61df3wegu3u" path="res://damage_boxes/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Script" uid="uid://bhhaemrchekk3" path="res://damage_boxes/hitbox.gd" id="4_hitbox"]
+
+[sub_resource type="Animation" id="A_idle"]
+resource_name = "idle"
+length = 0.97
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="A_attack"]
+resource_name = "attack"
+length = 0.45615193
+step = 0.07
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.07, 0.14, 0.21, 0.28, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [17, 18, 19, 20, 21, 22]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.14, 0.35),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"open_attack_hitbox"
+}, {
+"args": [],
+"method": &"close_attack_hitbox"
+}]
+}
+
+[sub_resource type="Animation" id="A_death"]
+resource_name = "death"
+length = 0.4
+step = 0.08
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.08, 0.16, 0.24, 0.32),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [33, 34, 35, 36, 37]
+}
+
+[sub_resource type="Animation" id="A_hurt"]
+resource_name = "hurt"
+length = 0.32
+step = 0.08
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.08, 0.16, 0.24),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [29, 30, 31, 32]
+}
+
+[sub_resource type="Animation" id="A_run"]
+resource_name = "run"
+length = 0.56
+loop_mode = 1
+step = 0.07
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.07, 0.14, 0.21, 0.28, 0.35, 0.42, 0.49),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [6, 7, 8, 9, 10, 11, 12, 13]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimLib_goblin"]
+_data = {
+&"RESET": SubResource("A_idle"),
+&"attack": SubResource("A_attack"),
+&"death": SubResource("A_death"),
+&"hurt": SubResource("A_hurt"),
+&"idle": SubResource("A_idle"),
+&"run": SubResource("A_run")
+}
+
+[sub_resource type="CapsuleShape2D" id="BodyCapsule"]
+radius = 7.0
+height = 18.0
+
+[sub_resource type="RectangleShape2D" id="HurtboxRect"]
+size = Vector2(16, 22)
+
+[sub_resource type="RectangleShape2D" id="HitboxRect"]
+size = Vector2(18.5, 22.5)
+
+[sub_resource type="CircleShape2D" id="DetectCircle"]
+radius = 240.0
+
+[node name="Enemy" type="CharacterBody2D" unique_id=302419763]
+collision_layer = 4
+script = ExtResource("1_enemy")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=610211430]
+texture_filter = 1
+texture = ExtResource("2_goblin_tex")
+offset = Vector2(0, -18.5)
+hframes = 38
+region_rect = Rect2(0, 0, 2432, 32)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1514856361]
+libraries/ = SubResource("AnimLib_goblin")
+autoplay = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=511615049]
+position = Vector2(0, -9)
+shape = SubResource("BodyCapsule")
+
+[node name="Hurtbox" type="Area2D" parent="." unique_id=927823742]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=28715722]
+position = Vector2(0, -10)
+shape = SubResource("HurtboxRect")
+debug_color = Color(0.2, 0.7, 1, 0.4)
+
+[node name="AttackHitbox" type="Area2D" parent="." unique_id=1684936569]
+position = Vector2(1.16, 0)
+collision_layer = 8
+collision_mask = 10
+monitoring = false
+monitorable = false
+script = ExtResource("4_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox" unique_id=1817488402]
+position = Vector2(3.5900002, -10)
+shape = SubResource("HitboxRect")
+debug_color = Color(1, 0.3, 0.3, 0.4)
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=919205785]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=1575413668]
+position = Vector2(0, -9)
+shape = SubResource("DetectCircle")
+debug_color = Color(1, 1, 0, 0.12)
+
+[node name="WallCheck" type="RayCast2D" parent="." unique_id=964942694]
+target_position = Vector2(16, -6)
+collision_mask = 5
+
+[node name="FloorAheadCheck" type="RayCast2D" parent="." unique_id=704427390]
+target_position = Vector2(19, 0)

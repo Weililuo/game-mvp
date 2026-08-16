@@ -1,0 +1,4 @@
+[gd_scene format=3 uid="uid://hxst3r14xmpk"]
+
+[node name="Spawner" type="Node2D" unique_id=340626153]
+position = Vector2(160, 152)
