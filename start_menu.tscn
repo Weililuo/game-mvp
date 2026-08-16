@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://c7lri2o5lfgem"]
+
+[ext_resource type="Script" uid="uid://b2q55o0r0hvnd" path="res://start_menu.gd" id="1_ctwoq"]
+[ext_resource type="Texture2D" uid="uid://c2ycnj04nhovk" path="res://Background/Free Pixel Art Forest/Preview/Background.png" id="1_jwbto"]
+[ext_resource type="Texture2D" uid="uid://p1tps5aue2ss" path="res://Icons/Buttons/Headline.PNG" id="2_v2mkm"]
+[ext_resource type="Texture2D" uid="uid://dfl125ygo348v" path="res://Icons/Buttons/Goblin.PNG" id="3_ctwoq"]
+[ext_resource type="Texture2D" uid="uid://bcore0hfdjpc5" path="res://Icons/Buttons/Start.PNG" id="4_ppfnh"]
+
+[node name="StartMenu" type="Control" unique_id=136216803]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ctwoq")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1018654023]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_jwbto")
+expand_mode = 1
+
+[node name="Headline" type="TextureRect" parent="." unique_id=1237560109]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -70.0
+offset_right = 80.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_v2mkm")
+expand_mode = 1
+
+[node name="Goblin" type="TextureRect" parent="." unique_id=1973875902]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = 10.0
+offset_right = 32.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_ctwoq")
+expand_mode = 1
+
+[node name="Start" type="TextureButton" parent="." unique_id=977324213]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -30.0
+offset_right = 100.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("4_ppfnh")
+ignore_texture_size = true
+stretch_mode = 5
+
+[connection signal="pressed" from="Start" to="." method="_on_start_pressed"]
