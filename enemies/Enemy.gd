@@ -37,16 +37,16 @@ enum State {
 ## ----------------------------------------------------------------------------
 ##  基础数据
 ## ----------------------------------------------------------------------------
-@export var attack: int = 8                     ## 小怪每次攻击造成的伤害
-@export var max_hp: int = 30                    ## 小怪最大生命
+@export var attack: int = 1                   	## 小怪每次攻击造成的伤害
+@export var max_hp: int = 3                    	## 小怪最大生命
 @export var move_speed: float = 60.0            ## 追击速度（像素/秒）
 @export var jump_force: float = JUMP_VELOCITY   ## 跳跃速度（负值向上）
-@export var attack_range: float = 56.0          ## 攻击触发范围（像素）
-@export var attack_cd: float = 0.9              ## 攻击结束到下次可攻击的冷却
-@export var stop_zone: float = 48.0             ## 距离小于该值停下（防止穿过目标反复晃）
+@export var attack_range: float = 14.0          ## 攻击触发范围（像素）
+@export var attack_cd: float = 1.0              ## 攻击结束到下次可攻击的冷却
+@export var stop_zone: float = 14           	## 距离小于该值停下（防止穿过目标反复晃）
 @export var MAX_CHASE_DIST: float = 600.0       ## 超过这个距离后放弃追击（回 IDLE）
-@export var hurt_pushback: float = 90.0         ## 被打瞬间反推速度（越小越不"飞"）
-@export var hurt_back_duration: float = 0.12    ## 被打硬直（秒）—— 足够播完 hurt 动画
+@export var hurt_pushback: float = 200.0         ## 被打瞬间反推速度（越小越不"飞"）
+@export var hurt_back_duration: float = 0.18    ## 被打硬直（秒）—— 足够播完 hurt 动画
 
 var hp: int = max_hp
 var can_attack: bool = true                     ## attack_cd 是否结束
@@ -78,8 +78,7 @@ func _ready() -> void:
 		_attack_hitbox.monitorable = false
 		if _attack_hitbox.has_method("set_damage"):
 			_attack_hitbox.set_damage(attack)
-		_attack_hitbox.area_entered.connect(_on_attack_hit_area)
-		_attack_hitbox.body_entered.connect(_on_attack_hit_body)
+		_attack_hitbox.area_entered.connect(_on_attack_hit_area) # Delete the rundundant one 
 
 	# —— 感知区：主角进入时锁目标
 	if _detection_area:
@@ -146,7 +145,6 @@ func _scan_target_fallback() -> void:
 					_set_state(State.CHASE)
 					return
 
-
 func _lock_target_if_player(node: Node) -> void:
 	if node == self:
 		return
@@ -163,6 +161,14 @@ func _lock_target_if_player(node: Node) -> void:
 		if state == State.IDLE:
 			_set_state(State.CHASE)
 
+func _is_target_alive() -> bool: # Verify the alive of the character before taking actions
+	if not is_instance_valid(_target):
+		return false
+	if _target.is_in_group("player") or "Player" in _target.name:
+		return true
+	if _target.get("_is_dead") == true or _target.name == "Death":
+		return false
+	return false
 
 ## ============================================================================
 ##  3. 每帧主循环 _physics_process
@@ -224,7 +230,8 @@ func _enter_chase() -> void:
 
 
 func _tick_chase(delta: float) -> void:
-	if not is_instance_valid(_target):
+	if not _is_target_alive():
+		_target = null
 		_set_state(State.IDLE)
 		return
 
@@ -270,7 +277,7 @@ func _tick_chase(delta: float) -> void:
 			velocity.y = jump_force
 
 	# 进入攻击范围 + 可以攻击 → ATTACK
-	if can_attack and dist <= attack_range:
+	if can_attack and abs_dx <= attack_range and abs(dy) < 20:
 		_set_state(State.ATTACK)
 
 
@@ -315,13 +322,18 @@ func _on_attack_end() -> void:
 	get_tree().create_timer(attack_cd).timeout.connect(func():
 		can_attack = true
 		# 冷却结束时若距离满足直接再攻；否则 CHASE 也会在 tick 里切
-		if is_instance_valid(_target):
-			if state == State.CHASE and global_position.distance_to(_target.global_position) <= attack_range:
+		if _is_target_alive():
+			var dx: float = _target.global_position.x - global_position.x
+			var dy: float = _target.global_position.y - global_position.y
+			if state == State.CHASE and abs(dx) <= attack_range and abs(dy) < 20.0:
 				_set_state(State.ATTACK)
 	)
 	# —— 攻击结束 → CHASE（让 CHASE tick 决定继续停住还是再追）
-	_set_state(State.CHASE)
-
+	if _is_target_alive():
+		_set_state(State.CHASE)
+	else:
+		_target = null
+		_set_state(State.IDLE)
 
 ## ============================================================================
 ##  5. 攻击盒：开关 + 命中回调
@@ -341,6 +353,12 @@ func _open_attack_hitbox() -> void:
 	if _attack_hitbox.monitoring:
 		return  ## 已经开着，不重复清命中表
 	_hitting_enemies.clear()
+
+	if "damage" in _attack_hitbox: # Verify that the attack damage of enemy is 1
+		_attack_hitbox.damage = attack
+	elif _attack_hitbox.has_method("set_damage"):
+		_attack_hitbox.set_damage(attack)
+
 	_attack_hitbox.monitoring = true
 	_attack_hitbox.monitorable = true
 
@@ -392,14 +410,13 @@ func _on_attack_hit_body(body: Node) -> void:
 ## ============================================================================
 ##  6. 受击 + 死亡
 ## ============================================================================
-func take_damage(amount: int) -> void:
+func take_damage(amount: int, source: Area2D = null) -> void:
 	if state == State.DEAD or amount <= 0:
 		return
 	hp = max(0, hp - amount)
 	_set_state(State.HURT)
 	if hp <= 0:
 		_set_state(State.DEAD)
-
 
 func _enter_hurt() -> void:
 	# 攻击状态被打，立刻关攻击盒防鬼畜
@@ -429,9 +446,9 @@ func _tick_hurt(_delta: float) -> void:
 
 func _enter_death() -> void:
 	_close_attack_hitbox()
+	get_tree().call_group("ui", "add_kill")
 	# 关碰撞 → 尸体不再被打/挡路
 	collision_layer = 0
-	collision_mask = 0
 	if _hurtbox:
 		_hurtbox.monitoring = false
 		_hurtbox.monitorable = false

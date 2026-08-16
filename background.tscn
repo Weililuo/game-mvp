@@ -1,67 +1,83 @@
 [gd_scene format=3 uid="uid://djkh8gy0gnq4q"]
 
-; ============================================================
-;  主场景：背景 + 地面碰撞 + 主角 + 1 只小怪（从屏幕右侧向左进攻主角）
-;  打开 Godot 4.7 → 按 F5 即可游玩，无需任何拖拽调整
-; ============================================================
-
 [ext_resource type="PackedScene" uid="uid://btu246jj4p0b0" path="res://knight.tscn" id="1_player_scn"]
-[ext_resource type="PackedScene" uid="uid://bw3n3mygoblin1" path="res://enemies/Enemy.tscn" id="2_enemy_scn"]
+[ext_resource type="PackedScene" uid="uid://cyxwd6k5eq82c" path="res://enemies/Enemy.tscn" id="2_enemy_scn"]
 [ext_resource type="Texture2D" uid="uid://cnegjxd3c8g3c" path="res://Background.png" id="3_bg_tex"]
+[ext_resource type="PackedScene" uid="uid://hxst3r14xmpk" path="res://spawner.tscn" id="4_bpugw"]
+[ext_resource type="Script" uid="uid://dlubxp6ruf5nj" path="res://ui.gd" id="4_splo0"]
+[ext_resource type="Script" uid="uid://btfft4tvv5b8y" path="res://spawner.gd" id="5_gjjrj"]
 
-; ----------------- 地面碰撞形状 -----------------
-; 主地面：顶面 y=172（胶囊底部对齐后视觉正好踩在背景地面上）
 [sub_resource type="RectangleShape2D" id="GroundShape_Main"]
-size = Vector2(800, 40)
+size = Vector2(1000, 40)
 
-; 右侧小高台：顶面 y=137（比主地面高 35 像素，可测试小怪/主角跳墙）
 [sub_resource type="RectangleShape2D" id="GroundShape_Platform"]
-size = Vector2(100, 16)
+size = Vector2(79, 148)
 
-; ----------------- 节点树 -----------------
-[node name="Background" type="Node2D"]
+[node name="Background" type="Node2D" unique_id=135626516]
 
-; ----- 背景视差层（队友原有）-----
-[node name="Parallax2D" type="Parallax2D" parent="."]
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=292514508]
 repeat_size = Vector2(320, 0)
 repeat_times = 2
 
-[node name="ForestBackground" type="TextureRect" parent="Parallax2D"]
+[node name="ForestBackground" type="TextureRect" parent="Parallax2D" unique_id=578775385]
+texture_filter = 1
 offset_right = 320.0
 offset_bottom = 189.0
 texture = ExtResource("3_bg_tex")
 expand_mode = 3
-texture_filter = 1
 
-; ----- 主地面 StaticBody2D
-;       顶面 y = 172, 高度 40 → 中心 y = 172 + 20 = 192
-;       宽度 800, 中心 x = 400
-[node name="Ground" type="StaticBody2D" parent="."]
-collision_layer = 1
+[node name="Ground" type="StaticBody2D" parent="." unique_id=1764968087]
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
-position = Vector2(400, 192)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground" unique_id=19884965]
+position = Vector2(171, 194)
 shape = SubResource("GroundShape_Main")
 
-; ----- 右侧小高台 StaticBody2D
-;       顶面 y = 137, 高度 16 → 中心 y = 145；x 中心 = 380
-[node name="Platform" type="StaticBody2D" parent="."]
-collision_layer = 1
-collision_mask = 0
+[node name="Wall_R" type="StaticBody2D" parent="." unique_id=1731976015]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
-position = Vector2(380, 145)
+[node name="Wall" type="CollisionShape2D" parent="Wall_R" unique_id=1339733704]
+position = Vector2(520, 115)
 shape = SubResource("GroundShape_Platform")
 
-; ----- 主角：出生在左侧 (110, 168)
-;       胶囊底部 local y = 3，落地 y+3 = 172 → y = 169
-;       出生比落点高 1 像素，让重力轻轻拉到地面上，视觉不跳
-[node name="Player" parent="." instance=ExtResource("1_player_scn")]
-position = Vector2(110, 168)
+[node name="Wall_L" type="StaticBody2D" parent="." unique_id=1853313842]
 
-; ----- 仅 1 只小怪：出生在屏幕最右边 (295, 168)
-;       胶囊底部 local y = 0，落地 y+0 = 172 → y = 172
-;       出生高 4 像素，重力拉到地面上。面朝向通过目标（主角在左侧）自动 flip
-[node name="Enemy" parent="." instance=ExtResource("2_enemy_scn")]
-position = Vector2(295, 168)
+[node name="Wall" type="CollisionShape2D" parent="Wall_L" unique_id=249604530]
+position = Vector2(-190, 105)
+shape = SubResource("GroundShape_Platform")
+
+[node name="Player" parent="." unique_id=1303926580 instance=ExtResource("1_player_scn")]
+position = Vector2(107, 171)
+
+[node name="Enemy" parent="." unique_id=1876598281 instance=ExtResource("2_enemy_scn")]
+position = Vector2(297, 173)
+
+[node name="Spawner" parent="." unique_id=340626153 instance=ExtResource("4_bpugw")]
+script = ExtResource("5_gjjrj")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=387976260]
+script = ExtResource("4_splo0")
+
+[node name="Timer" type="Label" parent="UI" unique_id=920099534]
+offset_left = 259.00003
+offset_top = 10.000005
+offset_right = 299.00003
+offset_bottom = 33.000004
+scale = Vector2(0.7, 0.7)
+text = "0"
+horizontal_alignment = 1
+
+[node name="HealthBox" type="HBoxContainer" parent="UI" unique_id=540078197]
+offset_left = 11.5
+offset_top = -1.5
+offset_right = 51.5
+offset_bottom = 38.5
+
+[node name="Score" type="Label" parent="UI" unique_id=1386488543]
+offset_left = 142.0
+offset_top = 16.0
+offset_right = 182.0
+offset_bottom = 39.0
+scale = Vector2(0.9, 0.9)
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1

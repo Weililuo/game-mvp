@@ -5,7 +5,7 @@ class_name Hitbbox extends Area2D
 ## - 当它重叠到目标的 Hurtbox 时，向对方传递伤害
 ## - damage：该次攻击的伤害数值（由动画脚本在播放攻击动画关键帧时设置）
 
-@export var damage: int = 5
+@export var damage: int = 1
 
 ## 击中目标时发出的信号（可选订阅，用于屏幕震动/音效等反馈）
 signal hit_detected(target: Node, dealt_damage: int)
@@ -29,7 +29,8 @@ func _on_area_entered(area: Area2D) -> void:
 
 ## 重叠到角色身体（CharacterBody2D）—— 兼容主角没有独立 Hurtbox 的情况
 func _on_body_entered(body: Node) -> void:
+	if body == owner or body == get_parent():
+		return
 	if body.has_method("take_damage"):
-		# 调用对方角色的 take_damage，直接传递伤害
 		body.take_damage(damage)
 		emit_signal("hit_detected", body, damage)
