@@ -2,7 +2,7 @@ extends Node2D
 
 var enemy_scene = preload("res://enemies/Enemy.tscn")
 var spawn_timer: float = 0.0
-var current_spawn_interval: float = 3.5
+var current_spawn_interval: float = 3.0
 
 func _process(delta: float) -> void:
 	var player = get_tree().get_first_node_in_group("player")

@@ -84,7 +84,7 @@ func move_state(delta: float) -> void:
 	if Input.is_action_just_pressed("attack_2") and can_attack:
 		can_attack = false
 		
-		var is_execute = randf() < 0.3 # One-time kill
+		var is_execute = randf() < 0.1 # One-time kill
 		if is_execute:
 			$SwordHitbox.damage = 999  
 		else:
@@ -119,7 +119,7 @@ func dash_state(delta: float) -> void:
 	if Input.is_action_just_pressed("attack_2") and can_attack:
 		can_attack = false
 		
-		var is_execute = randf() < 0.3 # One-time kill
+		var is_execute = randf() < 0.1 # One-time kill
 		if is_execute:
 			$SwordHitbox.damage = 999  
 		else:
@@ -141,7 +141,7 @@ func shield_state(delta: float) -> void:
 	if Input.is_action_just_pressed("attack_2") and can_attack:
 		can_attack = false
 		
-		var is_execute = randf() < 0.3 # One-time kill
+		var is_execute = randf() < 0.1 # One-time kill
 		if is_execute:
 			$SwordHitbox.damage = 999  
 		else:
