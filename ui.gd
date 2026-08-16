@@ -3,6 +3,7 @@ extends CanvasLayer
 @onready var time_label: Label = $Timer
 @onready var score_label: Label = $Score
 @onready var heart_container: HBoxContainer = $HealthBox
+@onready var controls_guide: Label = get_node_or_null("ControlsGuide")
 
 var full_heart = preload("res://ui/heart_ui_full.png")
 var empty_heart = preload("res://ui/heart_ui_empty.png")
@@ -18,7 +19,7 @@ func _ready() -> void:
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		player.health_changed.connect(update_hearts)
-		player.died.connect(func(): is_game_over = true)
+		player.died.connect(_on_player_died)
 		
 	for i in range(3): # Set hearts for health
 		var rect = TextureRect.new()
@@ -32,6 +33,11 @@ func _process(delta: float) -> void: # Set timer
 	if not is_game_over:
 		survival_time += delta
 		time_label.text = "%.2fs" % survival_time
+
+func _on_player_died() -> void:
+	is_game_over = true
+	if controls_guide:
+		controls_guide.hide()
 
 func add_kill() -> void:
 	if is_game_over:
