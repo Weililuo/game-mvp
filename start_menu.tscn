@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://c7lri2o5lfgem"]
 
-[ext_resource type="Script" uid="uid://b2q55o0r0hvnd" path="res://start_menu.gd" id="1_ctwoq"]
+[ext_resource type="Script" uid="uid://buqdt1u7chuyl" path="res://start_menu.gd" id="1_ctwoq"]
 [ext_resource type="Texture2D" uid="uid://c2ycnj04nhovk" path="res://Background/Free Pixel Art Forest/Preview/Background.png" id="1_jwbto"]
 [ext_resource type="Texture2D" uid="uid://p1tps5aue2ss" path="res://Icons/Buttons/Headline.PNG" id="2_v2mkm"]
 [ext_resource type="Texture2D" uid="uid://dfl125ygo348v" path="res://Icons/Buttons/Goblin.PNG" id="3_ctwoq"]
 [ext_resource type="Texture2D" uid="uid://bcore0hfdjpc5" path="res://Icons/Buttons/Start.PNG" id="4_ppfnh"]
+[ext_resource type="AudioStream" uid="uid://tbj58lleoe42" path="res://sounds/start.wav" id="6_7boi2"]
+[ext_resource type="AudioStream" uid="uid://dw1a4ieevu24p" path="res://sounds/button_click.wav" id="7_7boi2"]
 
 [node name="StartMenu" type="Control" unique_id=136216803]
 layout_mode = 3
@@ -73,5 +75,12 @@ grow_vertical = 2
 texture_normal = ExtResource("4_ppfnh")
 ignore_texture_size = true
 stretch_mode = 5
+
+[node name="BGM" type="AudioStreamPlayer" parent="." unique_id=518079452]
+stream = ExtResource("6_7boi2")
+autoplay = true
+
+[node name="SfxClick" type="AudioStreamPlayer" parent="." unique_id=1051846068]
+stream = ExtResource("7_7boi2")
 
 [connection signal="pressed" from="Start" to="." method="_on_start_pressed"]
