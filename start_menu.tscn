@@ -4,9 +4,22 @@
 [ext_resource type="Texture2D" uid="uid://c2ycnj04nhovk" path="res://Background/Free Pixel Art Forest/Preview/Background.png" id="1_jwbto"]
 [ext_resource type="Texture2D" uid="uid://p1tps5aue2ss" path="res://Icons/Buttons/Headline.PNG" id="2_v2mkm"]
 [ext_resource type="Texture2D" uid="uid://dfl125ygo348v" path="res://Icons/Buttons/Goblin.PNG" id="3_ctwoq"]
+[ext_resource type="PackedScene" uid="uid://cyxwd6k5eq82c" path="res://enemies/Enemy.tscn" id="3_pgi0o"]
+[ext_resource type="Script" uid="uid://bk4wpeh3jip3j" path="res://enemies/menu_goblin.gd" id="4_73a2t"]
 [ext_resource type="Texture2D" uid="uid://bcore0hfdjpc5" path="res://Icons/Buttons/Start.PNG" id="4_ppfnh"]
 [ext_resource type="AudioStream" uid="uid://tbj58lleoe42" path="res://sounds/start.wav" id="6_7boi2"]
 [ext_resource type="AudioStream" uid="uid://dw1a4ieevu24p" path="res://sounds/button_click.wav" id="7_7boi2"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_7boi2"]
+device = -1
+keycode = 4194309
+
+[sub_resource type="Shortcut" id="Shortcut_hioch"]
+events = [SubResource("InputEventKey_7boi2")]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7boi2"]
+atlas = ExtResource("4_ppfnh")
+region = Rect2(0, 0, 2240, 1100)
 
 [node name="StartMenu" type="Control" unique_id=136216803]
 layout_mode = 3
@@ -27,6 +40,17 @@ grow_vertical = 2
 texture = ExtResource("1_jwbto")
 expand_mode = 1
 
+[node name="MenuGoblin" parent="." unique_id=302419763 instance=ExtResource("3_pgi0o")]
+position = Vector2(79, 168)
+disable_mode = 2
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("4_73a2t")
+move_speed = 60.0
+min_x = 20.0
+max_x = 300.0
+start_direction = 1.0
+
 [node name="Headline" type="TextureRect" parent="." unique_id=1237560109]
 layout_mode = 1
 anchors_preset = 8
@@ -34,10 +58,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -106.0
-offset_top = -90.0
-offset_right = 100.0
-offset_bottom = 13.0
+offset_left = -124.0
+offset_top = -110.0
+offset_right = 116.0
+offset_bottom = 10.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_v2mkm")
@@ -50,10 +74,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -40.0
-offset_top = 18.0
-offset_right = 36.800003
-offset_bottom = 78.0
+offset_left = -35.0
+offset_top = 10.0
+offset_right = 37.960007
+offset_bottom = 67.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_ctwoq")
@@ -66,13 +90,15 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -125.0
-offset_top = -31.0
-offset_right = 118.33331
-offset_bottom = 42.0
+offset_left = -129.0
+offset_top = -44.0
+offset_right = 127.66666
+offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
-texture_normal = ExtResource("4_ppfnh")
+shortcut = SubResource("Shortcut_hioch")
+shortcut_in_tooltip = false
+texture_normal = SubResource("AtlasTexture_7boi2")
 ignore_texture_size = true
 stretch_mode = 5
 
@@ -84,5 +110,16 @@ autoplay = true
 [node name="SfxClick" type="AudioStreamPlayer" parent="." unique_id=1051846068]
 stream = ExtResource("7_7boi2")
 volume_db = -8.0
+
+[node name="MenuGoblin2" parent="." unique_id=817102195 instance=ExtResource("3_pgi0o")]
+position = Vector2(224, 168)
+disable_mode = 2
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("4_73a2t")
+move_speed = 60.0
+min_x = 40.0
+max_x = 280.0
+start_direction = -1.0
 
 [connection signal="pressed" from="Start" to="." method="_on_start_pressed"]

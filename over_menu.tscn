@@ -9,6 +9,22 @@
 [ext_resource type="AudioStream" uid="uid://b60hqmqumy6qg" path="res://sounds/game_over_7.wav" id="7_hioch"]
 [ext_resource type="AudioStream" uid="uid://dw1a4ieevu24p" path="res://sounds/button_click.wav" id="8_hlppi"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_hv55t"]
+atlas = ExtResource("2_oe6u1")
+region = Rect2(0, 900, 2800, 400)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6qblt"]
+atlas = ExtResource("3_pahb5")
+region = Rect2(0, 900, 2800, 400)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hioch"]
+atlas = ExtResource("4_hioch")
+region = Rect2(280, 500, 2240, 400)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hlppi"]
+atlas = ExtResource("5_hlppi")
+region = Rect2(280, 500, 2240, 400)
+
 [node name="OverMenu" type="CanvasLayer" unique_id=1315820816]
 script = ExtResource("1_oe6u1")
 
@@ -33,23 +49,23 @@ expand_mode = 1
 
 [node name="Mainmenu" type="TextureButton" parent="Root" unique_id=935122841]
 layout_mode = 0
-offset_left = 90.0
-offset_top = 85.0
-offset_right = 230.0
-offset_bottom = 185.0
-texture_normal = ExtResource("2_oe6u1")
-texture_hover = ExtResource("3_pahb5")
+offset_left = 88.0
+offset_top = 127.0
+offset_right = 229.0
+offset_bottom = 149.0
+texture_normal = SubResource("AtlasTexture_hv55t")
+texture_hover = SubResource("AtlasTexture_6qblt")
 ignore_texture_size = true
 stretch_mode = 5
 
 [node name="Restart" type="TextureButton" parent="Root" unique_id=1697643650]
 layout_mode = 0
-offset_left = 90.0
-offset_top = 85.0
-offset_right = 230.0
-offset_bottom = 185.0
-texture_normal = ExtResource("4_hioch")
-texture_hover = ExtResource("5_hlppi")
+offset_left = 102.0
+offset_top = 108.0
+offset_right = 214.0
+offset_bottom = 129.0
+texture_normal = SubResource("AtlasTexture_hioch")
+texture_hover = SubResource("AtlasTexture_hlppi")
 ignore_texture_size = true
 stretch_mode = 5
 

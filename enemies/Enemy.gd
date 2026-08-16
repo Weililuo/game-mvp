@@ -39,7 +39,7 @@ enum State {
 ## ----------------------------------------------------------------------------
 @export var attack: int = 1                   	## 小怪每次攻击造成的伤害
 @export var max_hp: int = 3                    	## 小怪最大生命
-@export var move_speed: float = 75.0            ## 追击速度（像素/秒）
+@export var move_speed: float = 65.0            ## 追击速度（像素/秒）
 @export var jump_force: float = JUMP_VELOCITY   ## 跳跃速度（负值向上）
 @export var attack_range: float = 14.0          ## 攻击触发范围（像素）
 @export var attack_cd: float = 0.9              ## 攻击结束到下次可攻击的冷却

@@ -8,8 +8,6 @@ extends CanvasLayer
 
 func _ready() -> void:
 	root.hide()
-	_apply_click_mask(btn_mainmenu)
-	_apply_click_mask(btn_restart)
 
 func _apply_click_mask(button: TextureButton) -> void:
 	var bitmap := BitMap.new()
@@ -56,3 +54,7 @@ func _on_restart_pressed() -> void:
 func _disable_buttons() -> void:
 	btn_mainmenu.disabled = true
 	btn_restart.disabled = true
+
+
+func _on_btn_restart_pressed() -> void:
+	pass # Replace with function body.
