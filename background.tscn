@@ -86,6 +86,19 @@ text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="ControlsGuide" type="Label" parent="UI" unique_id=2015406631]
+offset_left = 14.0
+offset_top = 30.0
+offset_right = 58.0
+offset_bottom = 102.0
+theme_override_colors/font_color = Color(1, 1, 1, 0.39215687)
+theme_override_font_sizes/font_size = 7
+text = "A / D: Move
+J: Hit
+K: Strike
+U: Shield
+L: Dash"
+
 [node name="BGM" type="AudioStreamPlayer" parent="." unique_id=1699180137]
 stream = ExtResource("8_vvxqx")
 volume_db = -10.0
