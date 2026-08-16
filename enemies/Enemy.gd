@@ -39,14 +39,14 @@ enum State {
 ## ----------------------------------------------------------------------------
 @export var attack: int = 1                   	## 小怪每次攻击造成的伤害
 @export var max_hp: int = 3                    	## 小怪最大生命
-@export var move_speed: float = 60.0            ## 追击速度（像素/秒）
+@export var move_speed: float = 65.0            ## 追击速度（像素/秒）
 @export var jump_force: float = JUMP_VELOCITY   ## 跳跃速度（负值向上）
 @export var attack_range: float = 14.0          ## 攻击触发范围（像素）
-@export var attack_cd: float = 1.0              ## 攻击结束到下次可攻击的冷却
+@export var attack_cd: float = 0.9              ## 攻击结束到下次可攻击的冷却
 @export var stop_zone: float = 14           	## 距离小于该值停下（防止穿过目标反复晃）
 @export var MAX_CHASE_DIST: float = 600.0       ## 超过这个距离后放弃追击（回 IDLE）
 @export var hurt_pushback: float = 200.0         ## 被打瞬间反推速度（越小越不"飞"）
-@export var hurt_back_duration: float = 0.18    ## 被打硬直（秒）—— 足够播完 hurt 动画
+@export var hurt_back_duration: float = 0.16    ## 被打硬直（秒）—— 足够播完 hurt 动画
 
 var hp: int = max_hp
 var can_attack: bool = true                     ## attack_cd 是否结束
@@ -413,6 +413,8 @@ func _on_attack_hit_body(body: Node) -> void:
 func take_damage(amount: int, source: Area2D = null) -> void:
 	if state == State.DEAD or amount <= 0:
 		return
+	if has_node("SfxHurt"):
+		$SfxHurt.play()
 	hp = max(0, hp - amount)
 	_set_state(State.HURT)
 	if hp <= 0:

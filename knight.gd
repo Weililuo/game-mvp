@@ -84,7 +84,7 @@ func move_state(delta: float) -> void:
 	if Input.is_action_just_pressed("attack_2") and can_attack:
 		can_attack = false
 		
-		var is_execute = randf() < 0.3 # One-time kill
+		var is_execute = randf() < 0.1 # One-time kill
 		if is_execute:
 			$SwordHitbox.damage = 999  
 		else:
@@ -94,6 +94,9 @@ func move_state(delta: float) -> void:
 		start_attack_cooldown()
 
 	if Input.is_action_just_pressed("dash") and can_dash:
+		var sfx_dash = get_node_or_null("SfxDash") as AudioStreamPlayer2D
+		if sfx_dash:
+			sfx_dash.play()
 		can_dash = false # In CD, can't use dash at the moment
 		playback.travel("DashState")
 		start_dash_cooldown() # Set timer
@@ -119,7 +122,7 @@ func dash_state(delta: float) -> void:
 	if Input.is_action_just_pressed("attack_2") and can_attack:
 		can_attack = false
 		
-		var is_execute = randf() < 0.3 # One-time kill
+		var is_execute = randf() < 0.1 # One-time kill
 		if is_execute:
 			$SwordHitbox.damage = 999  
 		else:
@@ -141,7 +144,7 @@ func shield_state(delta: float) -> void:
 	if Input.is_action_just_pressed("attack_2") and can_attack:
 		can_attack = false
 		
-		var is_execute = randf() < 0.3 # One-time kill
+		var is_execute = randf() < 0.1 # One-time kill
 		if is_execute:
 			$SwordHitbox.damage = 999  
 		else:
@@ -151,6 +154,9 @@ func shield_state(delta: float) -> void:
 		start_attack_cooldown()
 
 	elif Input.is_action_just_pressed("dash") and can_dash:
+		var sfx_dash = get_node_or_null("SfxDash") as AudioStreamPlayer2D
+		if sfx_dash:
+			sfx_dash.play()
 		can_dash = false
 		playback.travel("DashState")
 		start_dash_cooldown()
@@ -245,9 +251,13 @@ func take_damage(amount: int, source: Area2D = null) -> void:
 
 	# [2] 护盾状态：完全无敌 + 完美弹反检测
 	if cur_state == "ShieldState":
-		# 如果举盾时间小于等于 0.1 秒，触发完美弹反！
-		if shield_timer <= 0.11:
+		# 如果举盾时间小于等于 0.15 秒，触发完美弹反！
+		if shield_timer <= 0.15:
 			print("⚡ 完美弹反！")
+
+			var sfx_parry = get_node_or_null("SfxParry") as AudioStreamPlayer2D # Perfect shield
+			if sfx_parry:
+				sfx_parry.play()
 			
 			# 弹反计数与回血逻辑
 			parry_count += 1
@@ -265,6 +275,10 @@ func take_damage(amount: int, source: Area2D = null) -> void:
 				source.owner.take_damage(1)
 				
 		return # ⚠️ 核心：只要是举盾状态，不管是不是完美弹反，都不掉血，直接结束！
+
+	var sfx = get_node_or_null("SfxHurt") as AudioStreamPlayer2D
+	if sfx:
+		sfx.play()
 
 	# [3] 正常受伤逻辑
 	hp -= amount

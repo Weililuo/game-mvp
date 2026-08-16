@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://jxvpg3mufeol" path="res://enemies/BasicGoblin-Row.png" id="2_goblin_tex"]
 [ext_resource type="Script" uid="uid://ce61df3wegu3u" path="res://damage_boxes/hurtbox.gd" id="3_hurtbox"]
 [ext_resource type="Script" uid="uid://bhhaemrchekk3" path="res://damage_boxes/hitbox.gd" id="4_hitbox"]
+[ext_resource type="AudioStream" uid="uid://brhs5eoqh8c8p" path="res://sounds/player_hit.wav" id="5_3o3gx"]
 
 [sub_resource type="Animation" id="A_idle"]
 resource_name = "idle"
@@ -189,3 +190,7 @@ collision_mask = 5
 
 [node name="FloorAheadCheck" type="RayCast2D" parent="." unique_id=704427390]
 target_position = Vector2(19, 0)
+
+[node name="SfxHurt" type="AudioStreamPlayer2D" parent="." unique_id=1042738402]
+stream = ExtResource("5_3o3gx")
+volume_db = -7.0
